@@ -2,7 +2,7 @@ from flask import Blueprint, jsonify, abort, make_response
 
 class Planet:
     def __init__(self, id, name, description, moon):
-        self.id = id #generate randmon id 
+        self.id = id 
         self.name = name
         self.description = description
         self.moon = moon 
@@ -15,23 +15,21 @@ planets = [
 
 planets_bp = Blueprint("planets", __name__, url_prefix="/planets")
 @planets_bp.route("", methods=["GET"])
-def handle_books():
-    planets_response = [vars(planet) for planet in planets]
-    return jsonify(planets_response), 200
+def get_planets():
+    return jsonify([vars(planet) for planet in planets]), 200
 
 def validate_planets(planet_id):
     try:
         planet_id = int(planet_id)
     except:
-        abort(make_response({"message":f"planet {planet_id} invalid"}, 400))
+        abort(make_response({"Error message":f"Planet id# {planet_id} invalid"}, 400))
+
     for planet in planets:
         if planet.id == planet_id:
-            return planet
+            return vars(planet)
     
-    abort(make_response({"message":f"planet {planet_id} not found"}, 404))
+    abort(make_response({'Error message': f'Planet id# {planet_id} is not found'}, 404))
 
 @planets_bp.route("/<planet_id>", methods=["GET"])
-def handle_planet(planet_id):
-    planet = validate_planets(planet_id)
-    return vars(planet), 200 
-
+def get_planet(planet_id):
+    return jsonify(validate_planets(planet_id)), 200
