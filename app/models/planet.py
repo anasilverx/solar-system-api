@@ -1,10 +1,10 @@
 from app import db
 
 class Planet(db.Model):
-    id = db.Column(db.Integer, primary_key=True, auto_incremet=True)
-    name = db.Column(db.String(20), unique=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.String(20))
     description = db.Column(db.String(80))
-    species = db.Column(db.Integer)
+    species = db.Column(db.String(80))
     weather = db.Column(db.String(80))
     distance_to_sun = db.Column(db.BigInteger)
     __tablename__ = 'planets'
