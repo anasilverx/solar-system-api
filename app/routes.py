@@ -4,6 +4,20 @@ from app.models.planet import Planet
 
 planets_bp = Blueprint('planets', __name__, url_prefix='/planets')
 
+# helper function:
+def validate_planet(planet_id):
+    if not planet_id.isnumeric():
+        abort(make_response(f'Invalid input. {planet_id} is not a number', 400))
+    # planet_id = int(planet_id)
+    planet = Planet.query.get(int(planet_id))
+    
+    if not planet:
+        abort(make_response(f'Planet {planet_id} is not found', 404))
+    
+    return planet
+
+
+# routes:
 @planets_bp.route('', methods=['POST'])
 def create_planet():
     request_body = request.get_json()
@@ -29,7 +43,8 @@ def get_planets():
     planet_response = []
     for planet in planets:
         planet_response.append(
-            {
+            {   
+                'id': planet.id,
                 'name': planet.name,
                 'description': planet.description,
                 'species': planet.species,
@@ -39,6 +54,37 @@ def get_planets():
         )
     
     return jsonify(planet_response), 200
+
+@planets_bp.route('/<planet_id>', methods=['GET'])
+def get_one_planet(planet_id):
+    planet = validate_planet(planet_id)
+    
+    return planet.to_dict(), 200
+
+@planets_bp.route('/<planet_id>', methods=['PUT'])
+def replace_one_planet(planet_id):
+    planet = validate_planet(planet_id)
+    request_body = request.get_json()
+    
+    planet.name = request_body["name"]
+    planet.description = request_body["description"]
+    planet.species = request_body["species"]
+    planet.weather = request_body["weather"]
+    planet.distance_to_sun = request_body["distance_to_sun"]
+    
+    db.session.commit()
+    
+    return make_response(f"Planet with id {planet_id} was replaced successfully."), 200
+
+@planets_bp.route('/<planet_id>', methods=['DELETE'])
+def delete_one_planet(planet_id):
+    planet = validate_planet(planet_id)
+    
+    db.session.delete(planet)
+    db.session.commit()
+    
+    return make_response(f"Planet with id {planet_id} was deleted successfully."), 200
+    
 
 # class Planet:
 #     def __init__(self, id, name, description, moon):
