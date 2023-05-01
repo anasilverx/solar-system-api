@@ -12,3 +12,13 @@ class Planet(db.Model):
     def planet_string(self):
         return f'{self.name}, {self.id}. Description:{self.description}'
 
+    def to_dict(self):
+        return {   
+                'id': self.id,
+                'name': self.name,
+                'description': self.description,
+                'species': self.species,
+                'weather': self.weather,
+                'distance_to_sun': self.distance_to_sun
+            }
+        
