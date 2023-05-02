@@ -39,19 +39,15 @@ def create_planet():
 
 @planets_bp.route('', methods=['GET']) 
 def get_planets():
-    planets = Planet.query.all()
+    name_query = request.args.get("name")
+
+    if name_query:
+        planets = Planet.query.filter_by(name=name_query.strip())
+    else:
+        planets = Planet.query.all()
     planet_response = []
     for planet in planets:
-        planet_response.append(
-            {   
-                'id': planet.id,
-                'name': planet.name,
-                'description': planet.description,
-                'species': planet.species,
-                'weather': planet.weather,
-                'distance_to_sun': planet.distance_to_sun
-            }
-        )
+        planet_response.append(planet.to_dict())
     
     return jsonify(planet_response), 200
 
@@ -66,11 +62,11 @@ def replace_one_planet(planet_id):
     planet = validate_planet(planet_id)
     request_body = request.get_json()
     
-    planet.name = request_body["name"]
-    planet.description = request_body["description"]
-    planet.species = request_body["species"]
-    planet.weather = request_body["weather"]
-    planet.distance_to_sun = request_body["distance_to_sun"]
+    planet.name = request_body.get("name", planet.name)
+    planet.description = request_body.get("description", planet.description)
+    planet.species = request_body.get("species", planet.species)
+    planet.weather = request_body.get("weather", planet.weather)
+    planet.distance_to_sun = request_body.get("distance_to_sun", planet.distance_to_sun)
     
     db.session.commit()
     
