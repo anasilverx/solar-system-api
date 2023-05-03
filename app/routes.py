@@ -12,7 +12,7 @@ def validate_planet(planet_id):
     planet = Planet.query.get(int(planet_id))
     
     if not planet:
-        abort(make_response(f'Planet {planet_id} is not found', 404))
+        abort(make_response({'msg': f'Planet {planet_id} is not found'}, 404))
     
     return planet
 
@@ -21,8 +21,8 @@ def validate_planet(planet_id):
 @planets_bp.route('', methods=['POST'])
 def create_planet():
     request_body = request.get_json()
-    if not 'name' or not 'description' or not 'species' or not 'weather' or not 'distance_to_sun':
-        return 'Invalid Request', 400
+    if not 'name' in request_body or not 'description' in request_body or not 'species' in request_body or not 'weather' in request_body or not 'distance_to_sun' in request_body:
+        return make_response({'msg':'Invalid Request'}), 400
     
     new_planet = Planet(
         name=request_body['name'],
@@ -35,7 +35,7 @@ def create_planet():
     db.session.add(new_planet)
     db.session.commit()
     
-    return make_response(f'Planet {new_planet.name} created'), 201
+    return make_response({'msg': f'Planet {new_planet.name} created'}), 201
 
 @planets_bp.route('', methods=['GET']) 
 def get_planets():
@@ -70,7 +70,7 @@ def replace_one_planet(planet_id):
     
     db.session.commit()
     
-    return make_response(f"Planet with id {planet_id} was replaced successfully."), 200
+    return make_response({'msg': f"Planet with id {planet_id} was replaced successfully."}), 200
 
 @planets_bp.route('/<planet_id>', methods=['DELETE'])
 def delete_one_planet(planet_id):
@@ -79,7 +79,7 @@ def delete_one_planet(planet_id):
     db.session.delete(planet)
     db.session.commit()
     
-    return make_response(f"Planet with id {planet_id} was deleted successfully."), 200
+    return make_response({'msg': f"Planet with id {planet_id} was deleted successfully."}), 200
     
 
 # class Planet:
