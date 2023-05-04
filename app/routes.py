@@ -7,7 +7,7 @@ planets_bp = Blueprint('planets', __name__, url_prefix='/planets')
 # helper function:
 def validate_planet(planet_id):
     if not planet_id.isnumeric():
-        abort(make_response(f'Invalid input. {planet_id} is not a number', 400))
+        abort(make_response({'msg': f'Invalid id. {planet_id} is not a number'}, 400))
     # planet_id = int(planet_id)
     planet = Planet.query.get(int(planet_id))
     
