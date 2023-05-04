@@ -1,7 +1,6 @@
-import pytest
-from app import create_app
-from app import db
 from flask.signals import request_finished
+import pytest
+from app import create_app, db
 from app.models.planet import Planet
 
 @pytest.fixture

@@ -21,4 +21,3 @@ class Planet(db.Model):
                 'weather': self.weather,
                 'distance_to_sun': self.distance_to_sun
             }
-        

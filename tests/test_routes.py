@@ -12,6 +12,31 @@ def test_get_one_planet_empty_db(client):
     assert response.status_code == 404
     assert response_body == {"msg": "Planet 1 is not found"}
 
+def test_create_planet_adds_planet_to_db(client):
+    response = client.post('/planets', json={
+        "name": "test",
+        "species": "creatures",
+        "weather": "rainy",
+        "distance_to_sun": 578000000,
+        "description": "not habitable"})
+    response_body = response.get_json()
+    
+    assert response.status_code == 201
+    assert response_body == {"msg": "Planet test created"}
+
+def test_get_one_planet_populated_db(client, three_planets):
+    response = client.get('/planets/1')
+    response_body = response.get_json()
+    
+    assert response.status_code == 200
+    assert response_body == {
+        "id": 1,
+        "name": "Mars",
+        "species": "martian",
+        "weather": "extremely sunny",
+        "distance_to_sun": 143000000000,
+        "description": "red planet, third largest"}  
+
 def test_get_all_planets_populated_db(client, three_planets):
     response = client.get('/planets')
     response_body = response.get_json()
@@ -42,28 +67,3 @@ def test_get_all_planets_populated_db(client, three_planets):
             'distance_to_sun':93000000000
         }      
     ]
-    
-def test_post_create_planet_adds_planet(client):
-    response = client.post('/planets', json={
-        "name": "test",
-        "species": "",
-        "weather": "rainy",
-        "distance_to_sun": 578000000,
-        "description": "not habitable"})
-    response_body = response.get_json()
-    
-    assert response.status_code == 201
-    assert response_body == {"msg": "Planet test created"}
-
-def test_get_one_planet_populated_db(client, three_planets):
-    response = client.get('/planets/1')
-    response_body = response.get_json()
-    
-    assert response.status_code == 200
-    assert response_body == {
-        "id": 1,
-        "name": "Mars",
-        "species": "martian",
-        "weather": "extremely sunny",
-        "distance_to_sun": 143000000000,
-        "description": "red planet, third largest"}  
