@@ -21,16 +21,11 @@ def validate_model(model, id):
 @planets_bp.route('', methods=['POST'])
 def create_planet():
     request_body = request.get_json()
+    #keep name and description as not optional
     if not 'name' in request_body or not 'description' in request_body or not 'species' in request_body or not 'weather' in request_body or not 'distance_to_sun' in request_body:
         return make_response({'msg':'Invalid Request'}), 400
     
-    new_planet = Planet(
-        name=request_body['name'],
-        description=request_body['description'],
-        species=request_body['species'],
-        weather=request_body['weather'],
-        distance_to_sun=request_body['distance_to_sun']
-    )
+    new_planet = Planet.from_dict(request_body)
     
     db.session.add(new_planet)
     db.session.commit()

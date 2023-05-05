@@ -21,3 +21,13 @@ class Planet(db.Model):
                 'weather': self.weather,
                 'distance_to_sun': self.distance_to_sun
             }
+    
+    @classmethod
+    def from_dict(cls, attribute_values):
+        new_planet = cls(
+            name=attribute_values['name'],
+            description=attribute_values['description'],
+            species=attribute_values['species'],
+            weather=attribute_values['weather'],
+            distance_to_sun=attribute_values['distance_to_sun'])
+        return new_planet
