@@ -5,16 +5,16 @@ from app.models.planet import Planet
 planets_bp = Blueprint('planets', __name__, url_prefix='/planets')
 
 # helper function:
-def validate_planet(planet_id):
-    if not planet_id.isnumeric():
-        abort(make_response({'msg': f'Invalid id. {planet_id} is not a number'}, 400))
-    # planet_id = int(planet_id)
-    planet = Planet.query.get(int(planet_id))
+def validate_model(model, id):
+    if not id.isnumeric():
+        abort(make_response({'msg': f'Invalid id. {id} is not a number'}, 400))
     
-    if not planet:
-        abort(make_response({'msg': f'Planet {planet_id} is not found'}, 404))
+    record = model.query.get(int(id))
     
-    return planet
+    if not record:
+        abort(make_response({'msg': f'{model.__name__} {id} is not found'}, 404))
+    
+    return record
 
 
 # routes:
