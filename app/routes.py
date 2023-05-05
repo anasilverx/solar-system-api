@@ -23,14 +23,14 @@ def create_planet():
     request_body = request.get_json()
     #keep name and description as not optional
     if not 'name' in request_body or not 'description' in request_body or not 'species' in request_body or not 'weather' in request_body or not 'distance_to_sun' in request_body:
-        return make_response({'msg':'Invalid Request'}), 400
+        return {'msg':'Invalid Request'}, 400
     
     new_planet = Planet.from_dict(request_body)
     
     db.session.add(new_planet)
     db.session.commit()
     
-    return make_response({'msg': f'Planet {new_planet.name} created'}), 201
+    return {'msg': f'Planet {new_planet.name} created'}, 201
 
 @planets_bp.route('', methods=['GET']) 
 def get_planets():
@@ -65,7 +65,7 @@ def replace_one_planet(planet_id):
     
     db.session.commit()
     
-    return make_response({'msg': f"Planet with id {planet_id} was replaced successfully."}), 200
+    return {'msg': f"Planet with id {planet_id} was replaced successfully."}, 200
 
 @planets_bp.route('/<planet_id>', methods=['DELETE'])
 def delete_one_planet(planet_id):
@@ -74,39 +74,4 @@ def delete_one_planet(planet_id):
     db.session.delete(planet)
     db.session.commit()
     
-    return make_response({'msg': f"Planet with id {planet_id} was deleted successfully."}), 200
-    
-
-# class Planet:
-#     def __init__(self, id, name, description, moon):
-#         self.id = id 
-#         self.name = name
-#         self.description = description
-#         self.moon = moon 
-
-# planets = [
-#     Planet(3, "Earth", "Third planet from sun", ["Moon"]),
-#     Planet(5, "Jupiter", "The largest in the solar system. Gas giant", ["Europa", "Io", "Elara"]),
-#     Planet(4, "Mars", "Third largest. Red Planet", ["Phobos", "Deimos"])
-# ]
-
-# planets_bp = Blueprint("planets", __name__, url_prefix="/planets")
-# @planets_bp.route("", methods=["GET"])
-# def get_planets():
-#     return jsonify([vars(planet) for planet in planets]), 200
-
-# def validate_planets(planet_id):
-#     try:
-#         planet_id = int(planet_id)
-#     except:
-#         abort(make_response({"Error message":f"Planet id# {planet_id} invalid"}, 400))
-
-#     for planet in planets:
-#         if planet.id == planet_id:
-#             return vars(planet)
-    
-#     abort(make_response({'Error message': f'Planet id# {planet_id} is not found'}, 404))
-
-# @planets_bp.route("/<planet_id>", methods=["GET"])
-# def get_planet(planet_id):
-#     return jsonify(validate_planets(planet_id)), 200
+    return {'msg': f"Planet with id {planet_id} was deleted successfully."}, 200
