@@ -21,7 +21,7 @@ def validate_model(model, id):
 @planets_bp.route('', methods=['POST'])
 def create_planet():
     request_body = request.get_json()
-    #keep name and description as not optional
+    #Requires all attributes to create a planet
     if not 'name' in request_body or not 'description' in request_body or not 'species' in request_body or not 'weather' in request_body or not 'distance_to_sun' in request_body:
         return {'msg':'Invalid Request'}, 400
     
@@ -38,6 +38,8 @@ def get_planets():
 
     if name_query:
         planets = Planet.query.filter_by(name=name_query.strip())
+        #To use query params to return any name that starts with given parameter:
+        # filter(Planet.name.ilike(name_query.strip()+'%'))
     else:
         planets = Planet.query.all()
     planet_response = []
